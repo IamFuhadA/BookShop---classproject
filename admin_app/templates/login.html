@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimal-ui" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Admin Login</title>
+  <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/icon/themify-icons/themify-icons.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/icon/icofont/css/icofont.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/css/jquery.mCustomScrollbar.css' %}">
+
+  <style>
+    body {
+      background-color: #f3f4f7;
+      font-family: "Open Sans", sans-serif;
+    }
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      padding: 2rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-card h4 {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .form-control {
+      border-radius: 8px;
+    }
+    .btn-primary {
+      border-radius: 8px;
+      background-color: #3f51b5;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #2f3f9f;
+    }
+    .icon {
+      font-size: 48px;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+      color: #3f51b5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="icon">
+        <i class="icofont icofont-ui-lock"></i>
+      </div>
+      <h4>Admin Login</h4>
+
+      <form method="post" action="{% url 'admin_login' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" class="form-control" name="username" required placeholder="Enter your username">
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" type="password" class="form-control" name="password" required placeholder="Enter your password">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="{% static 'assets/js/jquery/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/js/jquery-ui/jquery-ui.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/js/popper.js/popper.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/js/bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
