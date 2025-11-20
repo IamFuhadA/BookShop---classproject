@@ -3,6 +3,7 @@ from admin_app.models import CategoryDB,BookDB
 from .models import RegistrationDB,ContactDB,CartDB
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 # Create your views here.
 
@@ -68,20 +69,35 @@ def save_signup(request):
         password=request.POST.get('password')
         cnf_password=request.POST.get('confirm')
 
+        # Validate password match
+        if password != cnf_password:
+            messages.error(request, 'Passwords do not match. Please try again.')
+            return redirect(signup_page)
+        
+        # Check for duplicate username
+        if RegistrationDB.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists. Please choose a different username.')
+            return redirect(signup_page)
+        
+        # Check for duplicate email
+        if RegistrationDB.objects.filter(mail=mail).exists():
+            messages.error(request, 'Email already registered. Please use a different email.')
+            return redirect(signup_page)
+        
+        # Check for duplicate name
+        if RegistrationDB.objects.filter(name=name).exists():
+            messages.error(request, 'This name is already registered.')
+            return redirect(signup_page)
+        
+        # Create new user
         obj = RegistrationDB(
             username=username,name=name,
             mail=mail,contact=contact,password=password,
             confirm_password=cnf_password
         )
-        if RegistrationDB.objects.filter(name=name).exists():
-            return redirect(signup_page)
-        elif RegistrationDB.objects.filter(mail=mail).exists():
-            return redirect(signup_page)
-        elif RegistrationDB.objects.filter(username=username).exists():
-            return redirect(signup_page)
-        else :
-            obj.save()
-            return redirect(signin_page)
+        obj.save()
+        messages.success(request, 'Account created successfully! Please sign in.')
+        return redirect(signin_page)
 
 #-----------------------------------------------------------------------
 def signin_page(request):
@@ -94,8 +110,10 @@ def signin(request):
         if RegistrationDB.objects.filter(username=name,password=password).exists():
             request.session["username"]=name
             request.session["password"]=password
+            messages.success(request, f'Welcome back! You have successfully signed in.')
             return redirect(home_page)
         else:
+            messages.error(request, 'Invalid username or password. Please try again.')
             return redirect(signin_page)
     else:
         return redirect(signin_page)
@@ -103,7 +121,7 @@ def signin(request):
 def sign_out(request):
     del request.session["username"]
     del request.session["password"]
-    return redirect(signin_page)
+    return redirect(home_page)
 
 #-----------------------------------------------
 

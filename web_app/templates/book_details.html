@@ -206,12 +206,12 @@
 									</div>
 
 									{% if request.session.username %}
-										<button type="submit" class="btn-accent-arrow" style="border-radius: 10px;">
+										<a href="{% url 'cart' %}"><button type="submit" class="btn-accent-arrow" style="border-radius: 10px;">
 											Shop It Now <i class="icon icon-ns-arrow-right"></i>
-										</button>
+										</button></a>
 									{% else %}
 										<span>
-											SignUp/SignIn First <i class="icon icon-ns-arrow-right"></i>
+											SignUp/SignIn First <a href="{% url 'signup' %}"><i class="icon icon-ns-arrow-right"></i></a>
 										</span>
 									{% endif %}
 								</form>
