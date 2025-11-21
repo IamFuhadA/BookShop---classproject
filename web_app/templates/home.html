@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
 	<title>BookShop - Free Book Store HTML CSS Template</title>
 	<meta charset="utf-8">
@@ -25,10 +25,11 @@
 
 <style>
 	.product-style img {
-    width: 100%;
-    height: 300px; /* height and width on cards of our books gallery */
-    object-fit: cover;
-}
+		width: 100%;
+		height: 300px;
+		/* height and width on cards of our books gallery */
+		object-fit: cover;
+	}
 </style>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
@@ -67,7 +68,8 @@
 							<a href="{% url 'signup' %}" class="user-account for-buy"><i
 									class="icon icon-user"></i><span>SignUp/SignIn</span></a>
 							{%endif%}
-							<a href="{% url 'cart' %}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
+							<a href="{% url 'cart' %}" class="cart for-buy"><i
+									class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
 
 							<div class="action-menu">
 
@@ -95,7 +97,12 @@
 
 					<div class="col-md-2">
 						<div class="main-logo">
-							<a href="{% url 'home' %}"><img src="{% static 'web/images/main-logo.png' %}" alt="logo"></a>
+							<a href="{% url 'home' %}" style="text-decoration: none;">
+								<h1
+									style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-size: 2.5rem; font-weight: 700; margin: 0; letter-spacing: -0.5px;">
+									<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
+								</h1>
+							</a>
 						</div>
 					</div>
 
@@ -110,18 +117,21 @@
 										<a href="#" class="nav-link">Categories</a>
 										<ul>
 											{% for i in categories %}
-												<li class=""><a href="{% url 'categories' i.category_name %}">{{i.category_name}}</a></li>
+											<li class=""><a
+													href="{% url 'categories' i.category_name %}">{{i.category_name}}</a>
+											</li>
 											{% endfor %}
 										</ul>
 
 									</li>
 									<li class="menu-item"><a href="{% url 'books' %}" class="nav-link">Popular </a></li>
-									<li class="menu-item"><a href="{% url 'contact' %}" class="nav-link">Contact Us</a></li>
-<!--									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
-<!--									<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
-<!--									<li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>-->
-<!--									<li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>-->
-<!--									<li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>-->
+									<li class="menu-item"><a href="{% url 'contact' %}" class="nav-link">Contact Us</a>
+									</li>
+									<!--									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
+									<!--									<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
+									<!--									<li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>-->
+									<!--									<li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>-->
+									<!--									<li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>-->
 								</ul>
 
 								<div class="hamburger">
@@ -154,10 +164,11 @@
 					<div class="main-slider pattern-overlay">
 						<div class="slider-item">
 							<div class="banner-content">
-								<h2 class="banner-title">Life of the Wild</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero
-									ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis
-									urna, a eu.</p>
+								<h2 class="banner-title">Discover Your Next Great Read</h2>
+								<p>Welcome to BookShop, your destination for quality books across all genres. From
+									timeless classics to contemporary bestsellers, find the perfect book to inspire,
+									educate, and entertain you.</p>
+
 								<div class="btn-wrap">
 									<a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i
 											class="icon icon-ns-arrow-right"></i></a>
@@ -168,10 +179,11 @@
 
 						<div class="slider-item">
 							<div class="banner-content">
-								<h2 class="banner-title">Birds gonna be Happy</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero
-									ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis
-									urna, a eu.</p>
+								<h2 class="banner-title">Curated Collections Just for You</h2>
+								<p>Explore our carefully curated selection of fiction, science, technology, and more.
+									Whether you're looking for adventure, knowledge, or relaxation, we have something
+									special waiting for you.</p>
+
 								<div class="btn-wrap">
 									<a href="#" class="btn btn-outline-accent btn-accent-arrow">Read More<i
 											class="icon icon-ns-arrow-right"></i></a>
@@ -225,13 +237,15 @@
 					<div class="product-list" data-aos="fade-up">
 						<div class="row g-4">
 
-						{% for i in categories %}
+							{% for i in categories %}
 							<div class="col-md-3">
 								<div class="product-item">
 									<figure class="product-style">
-										<img src="{{ i.cover_image.url }}" alt="Books" class="product-item " height="80" width="50">
+										<img src="{{ i.cover_image.url }}" alt="Books" class="product-item " height="80"
+											width="50">
 
-											<a href="{% url 'categories' i.category_name %}"><button type="button" class="add-to-cart" data-product-tile="add-to-cart">
+										<a href="{% url 'categories' i.category_name %}"><button type="button"
+												class="add-to-cart" data-product-tile="add-to-cart">
 												View Details</button></a>
 									</figure>
 									<figcaption>
@@ -239,7 +253,7 @@
 									</figcaption>
 								</div>
 							</div>
-						{% endfor %}
+							{% endfor %}
 
 
 						</div><!--ft-books-slider-->
@@ -286,14 +300,18 @@
 					<div class="tab-content">
 						<div id="all-genre" data-tab-content class="active">
 							<div class="row g-4">
-							{% for i in Books %}
+								{% for i in Books %}
 								<div class="col-md-3">
 									<div class="product-item">
 										<figure class="product-style">
-											<img src="{% static 'web/images/product-item2.jpg'%}" alt="Books" class="product-item">
+											{% if i.cover_image %}<img src="{{ i.cover_image.url }}" alt="{{ i.title }}"
+												class="product-item">{% else %}<img
+												src="{% static 'web/images/product-item2.jpg'%}" alt="Books"
+												class="product-item">{% endif %}
 											<a href="{% url 'details' i.id %}">
-											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">
-												Add to Cart</button></a>
+												<button type="button" class="add-to-cart"
+													data-product-tile="add-to-cart">
+													Add to Cart</button></a>
 										</figure>
 										<figcaption>
 											<h3>{{i.title}}</h3>
@@ -594,8 +612,14 @@
 
 					<div class="footer-item">
 						<div class="company-brand">
-							<img src="{% static 'web/images/main-logo.png' %}" alt="logo" class="footer-logo">
-							<p>At BookShop, we believe that every book tells a story worth sharing. From timeless classics to modern favorites, we curate collections that spark imagination and inspire a lifelong love for reading. Join our community and discover the joy of books—one page at a time.</p>
+							<h3
+								style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;">
+								<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
+							</h3>
+							<p>At BookShop, we believe that every book tells a story worth sharing. From timeless
+								classics to modern favorites, we curate collections that spark imagination and inspire a
+								lifelong love for reading. Join our community and discover the joy of books—one page at
+								a time.</p>
 
 						</div>
 					</div>
