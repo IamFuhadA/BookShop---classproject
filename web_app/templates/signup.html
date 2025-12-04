@@ -125,7 +125,7 @@
     </div>
     {% endif %}
 
-    <form action="{% url 'save_signup' %}" method="POST" novalidate>
+    <form name="signupForm" action="{% url 'save_signup' %}" method="POST" novalidate onsubmit="return validateForm()">
       {% csrf_token %}
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
@@ -144,7 +144,7 @@
 
       <div class="mb-3">
         <label for="contact" class="form-label">Mobile No</label>
-        <input id="contact" name="number" type="number" class="form-control" required>
+        <input id="contact" name="number" type="text" class="form-control" required>
       </div>
 
       <div class="mb-3">
@@ -164,6 +164,62 @@
       Already have an account? <a href="{% url 'signin' %}">Sign in</a>
     </div>
   </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function validateForm() {
+      let username = document.signupForm.username.value;
+      let fullname = document.signupForm.name.value;
+      let email = document.signupForm.email.value;
+      let contact = document.signupForm.number.value;
+      let password = document.signupForm.password.value;
+      let confirm = document.signupForm.confirm.value;
+
+      if (username == "" || username == null) {
+        alert("Username must be filled out");
+        return false;
+      }
+      else if (fullname == "" || fullname == null) {
+        alert("Name must be filled out");
+        return false;
+      }
+      else if (email == "" || email == null) {
+        alert("Email must be filled out");
+        return false;
+      }
+      else if (!email.includes("@") || !email.includes(".")) {
+        alert("Please enter a valid email address");
+        return false;
+      }
+      else if (contact == "" || contact == null) {
+        alert("Mobile number must be filled out");
+        return false;
+      }
+      else if (isNaN(contact) || contact.length != 10) {
+        alert("Please enter a valid 10-digit mobile number");
+        return false;
+      }
+      else if (password == "" || password == null) {
+        alert("Password must be filled out");
+        return false;
+      }
+      else if (password.length < 8) {
+        alert("Password must be at least 8 characters long");
+        return false;
+      }
+      else if (confirm == "" || confirm == null) {
+        alert("Confirm password must be filled out");
+        return false;
+      }
+      else if (password !== confirm) {
+        alert("Passwords do not match");
+        return false;
+      }
+
+      alert("Form submitted successfully!");
+      return true;
+    }
+  </script>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
 	<title>BookSaw - Free Book Store HTML CSS Template</title>
 	<meta charset="utf-8">
@@ -19,16 +19,17 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'web/css/normalize.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'web/icomoon/icomoon.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'web/css/vendor.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'web/style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'web/style.css' %}?v=1.1">
 
 </head>
 
 <style>
 	.product-style img {
-    width: 100%;
-    height: 300px; /* height and width on cards of our books gallery */
-    object-fit: cover;
-}
+		width: 100%;
+		height: 300px;
+		/* height and width on cards of our books gallery */
+		object-fit: cover;
+	}
 </style>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
@@ -61,11 +62,14 @@
 							{% if request.session.username %}
 							<a href="{% url 'signup' %}" class="user-account for-buy"><i
 									class="icon icon-user"></i><span>Welcome {{request.session.username}}</span></a>
+							<a href="{% url 'signin_out' %}" class="user-account for-buy"><i
+									class="icon icon-user"></i><span>SignOut</span></a>
 							{%else%}
 							<a href="{% url 'signup' %}" class="user-account for-buy"><i
-									class="icon icon-user"></i><span>SignUp</span></a>
+									class="icon icon-user"></i><span>SignUp/SignIn</span></a>
 							{%endif%}
-							<a href="{% url 'cart' %}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
+							<a href="{% url 'cart' %}" class="cart for-buy"><i
+									class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
 
 							<div class="action-menu">
 
@@ -94,10 +98,11 @@
 					<div class="col-md-2">
 						<div class="main-logo">
 							<a href="{% url 'home' %}" style="text-decoration: none;">
-							<h1 style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-size: 2.5rem; font-weight: 700; margin: 0; letter-spacing: -0.5px;">
-								<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
-							</h1>
-						</a>
+								<h1
+									style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-size: 2.5rem; font-weight: 700; margin: 0; letter-spacing: -0.5px;">
+									<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
+								</h1>
+							</a>
 						</div>
 					</div>
 
@@ -108,22 +113,26 @@
 								<ul class="menu-list">
 									<li class="menu-item "><a href="{% url 'home' %}">Home</a></li>
 									<li class="menu-item "><a href="{% url 'about' %}">About </a></li>
-									<li class="menu-item has-sub active">
+									<li
+										class="menu-item has-sub{% if request.resolver_match.url_name == 'categories' %} active{% endif %}">
 										<a href="#" class="nav-link">Categories</a>
 										<ul>
 											{% for i in categories %}
-												<li class=""><a href="{% url 'categories' i.category_name %}">{{i.category_name}}</a></li>
+											<li class=""><a
+													href="{% url 'categories' i.category_name %}">{{i.category_name}}</a>
+											</li>
 											{% endfor %}
 										</ul>
 
 									</li>
 									<li class="menu-item"><a href="{% url 'books' %}" class="nav-link">Popular </a></li>
-									<li class="menu-item"><a href="{% url 'contact' %}" class="nav-link">Contact Us</a></li>
-<!--									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
-<!--									<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
-<!--									<li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>-->
-<!--									<li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>-->
-<!--									<li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>-->
+									<li class="menu-item"><a href="{% url 'contact' %}" class="nav-link">Contact Us</a>
+									</li>
+									<!--									<li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
+									<!--									<li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
+									<!--									<li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>-->
+									<!--									<li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>-->
+									<!--									<li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>-->
 								</ul>
 
 								<div class="hamburger">
@@ -152,8 +161,8 @@
 						<div class="title">
 							<span>Some quality items</span>
 						</div>
-								<h2 class="section-title">{{filter}} Books</h2>
-						</div>
+						<h2 class="section-title">{{filter}} Books</h2>
+					</div>
 
 					<ul class="tabs">
 						<li data-tab-target="#all-genre" class="active tab">All Genre</li>
@@ -170,20 +179,23 @@
 								<div class="col-md-3">
 									<div class="product-item">
 										<figure class="product-style">
-											{% if i.cover_image %}<img src="{{ i.cover_image.url }}" alt="{{ i.title }}" class="product-item">{% else %}<img src="images/tab-item1.jpg" alt="Books" class="product-item">{% endif %}
+											{% if i.cover_image %}<img src="{{ i.cover_image.url }}" alt="{{ i.title }}"
+												class="product-item">{% else %}<img src="images/tab-item1.jpg"
+												alt="Books" class="product-item">{% endif %}
 
-												<a href="{% url 'details' i.id %}"><button type="button" class="add-to-cart" data-product-tile="add-to-cart">View Details</button></a>
+											<a href="{% url 'details' i.id %}"><button type="button" class="add-to-cart"
+													data-product-tile="add-to-cart">View Details</button></a>
 										</figure>
-  						                  <figcaption>
-                      						  <h3>{{ i.book_name }}</h3>
-											  <span>{{ i.author }}</span>
-											  <div class="item-price">${{ i.price }}</div>
-										  </figcaption>
+										<figcaption>
+											<h3>{{ i.title }}</h3>
+											<span>{{ i.author }}</span>
+											<div class="item-price">${{ i.price }}</div>
+										</figcaption>
 									</div>
 								</div>
 								{% endfor %}
-								 {% else %}
-    							    <p class="text-center text-muted mt-5">No books found in this category.</p>
+								{% else %}
+								<p class="text-center text-muted mt-5">No books found in this category.</p>
 								{% endif %}
 							</div>
 						</div>
@@ -203,10 +215,14 @@
 
 					<div class="footer-item">
 						<div class="company-brand">
-							<h3 style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;">
+							<h3
+								style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;">
 								<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
 							</h3>
-							<p>At BookShop, we believe that every book tells a story worth sharing. From timeless classics to modern favorites, we curate collections that spark imagination and inspire a lifelong love for reading. Join our community and discover the joy of books—one page at a time.</p>
+							<p>At BookShop, we believe that every book tells a story worth sharing. From timeless
+								classics to modern favorites, we curate collections that spark imagination and inspire a
+								lifelong love for reading. Join our community and discover the joy of books—one page at
+								a time.</p>
 
 						</div>
 					</div>
@@ -358,4 +374,5 @@
 	<script src="{% static 'web/js/script.js' %}"></script>
 
 </body>
+
 </html>

@@ -2,68 +2,117 @@
 {% extends 'index.html' %}
 {% block content %}
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Edit Book</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+
 <body class="bg-light">
 
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Edit Book</h2>
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Edit Book</h2>
 
-  <form action="{% url 'update_book' book.id %}" method="POST" enctype="multipart/form-data" class="shadow p-4 bg-white rounded">
-    {% csrf_token %}
+    <form name="editBookForm" action="{% url 'update_book' book.id %}" method="POST" enctype="multipart/form-data"
+      class="shadow p-4 bg-white rounded" onsubmit="return validateForm()">
+      {% csrf_token %}
 
-    <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
-      <input type="text" class="form-control" id="title" name="title" value="{{ book.title }}" required>
-    </div>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ book.title }}" required>
+      </div>
 
-    <div class="mb-3">
-      <label for="author" class="form-label">Author</label>
-      <input type="text" class="form-control" id="author" name="author" value="{{ book.author }}" required>
-    </div>
+      <div class="mb-3">
+        <label for="author" class="form-label">Author</label>
+        <input type="text" class="form-control" id="author" name="author" value="{{ book.author }}" required>
+      </div>
 
-    <div class="mb-3">
-      <label for="category" class="form-label">Category</label>
-      <select name="category" id="category" class="form-control">
-        <option value="" {% if not book.category %}selected{% endif %}>-- Select Category --</option>
-        {% for i in categories %}
-          <option value="{{ i.category_name }}" {% if book.category == i.category_name %}selected{% endif %}>{{ i.category_name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select name="category" id="category" class="form-control">
+          <option value="" {% if not book.category %}selected{% endif %}>-- Select Category --</option>
+          {% for i in categories %}
+          <option value="{{ i.category_name }}" {% if book.category==i.category_name %}selected{% endif %}>{{
+            i.category_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-    <div class="mb-3">
-      <label for="price" class="form-label">Price</label>
-      <input type="number" class="form-control" id="price" name="price" value="{{ book.price }}" required>
-    </div>
+      <div class="mb-3">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" class="form-control" id="price" name="price" value="{{ book.price }}" required>
+      </div>
 
-    <div class="mb-3">
-      <label for="publisher" class="form-label">Publisher</label>
-      <input type="text" class="form-control" id="publisher" name="publisher" value="{{ book.publisher }}" required>
-    </div>
+      <div class="mb-3">
+        <label for="publisher" class="form-label">Publisher</label>
+        <input type="text" class="form-control" id="publisher" name="publisher" value="{{ book.publisher }}" required>
+      </div>
 
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <textarea class="form-control" id="description" name="description" rows="3" required>{{ book.description }}</textarea>
-    </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3"
+          required>{{ book.description }}</textarea>
+      </div>
 
-        <div class="mb-3">
-      <label class="form-label">Cover Image</label>
-          <img src="{{ book.cover_image.url }}" alt="Cover Image" width="100" height="100" class="rounded mb-2">
-      <input type="file" name="cover_image" class="form-control" accept="image/*">
-    </div>
-<br>
+      <div class="mb-3">
+        <label class="form-label">Cover Image</label>
+        <img src="{{ book.cover_image.url }}" alt="Cover Image" width="100" height="100" class="rounded mb-2">
+        <input type="file" name="cover_image" class="form-control" accept="image/*">
+      </div>
+      <br>
 
-    <div class="text-center">
-      <button type="submit" class="btn btn-primary">Update</button>
-    </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
 
-  </form>
-</div>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      let title = document.editBookForm.title.value;
+      let author = document.editBookForm.author.value;
+      let category = document.editBookForm.category.value;
+      let price = document.editBookForm.price.value;
+      let publisher = document.editBookForm.publisher.value;
+      let description = document.editBookForm.description.value;
+
+      if (title == "" || title == null) {
+        alert("Title must be filled out");
+        return false;
+      }
+      else if (author == "" || author == null) {
+        alert("Author must be filled out");
+        return false;
+      }
+      else if (category == "" || category == null) {
+        alert("Category must be selected");
+        return false;
+      }
+      else if (price == "" || price == null) {
+        alert("Price must be filled out");
+        return false;
+      }
+      else if (isNaN(price) || price <= 0) {
+        alert("Please enter a valid price");
+        return false;
+      }
+      else if (publisher == "" || publisher == null) {
+        alert("Publisher must be filled out");
+        return false;
+      }
+      else if (description == "" || description == null) {
+        alert("Description must be filled out");
+        return false;
+      }
+
+      alert("Book updated successfully!");
+      return true;
+    }
+  </script>
 
 </body>
+
 </html>
 {% endblock %}
