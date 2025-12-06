@@ -8,26 +8,51 @@ from django.contrib import messages
 # Create your views here.
 
 def home_page(request):
+
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+
     category = {
-        'categories':CategoryDB.objects.all(),
+        'categories': CategoryDB.objects.all(),
         'Books': BookDB.objects.all(),
+        'cart_count': total_items
     }
-    return render(request,"home.html",category)
+
+    return render(request, "home.html", category)
+
 
 def about_page(request):
     category = {'categories': CategoryDB.objects.all()}
-    return render(request,"about.html",category)
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+    return render(request,"about.html",category,{'cart_count': total_items})
 
 def PopularBooks_page(request):
     books = {
         'Books':BookDB.objects.all(),
         'categories': CategoryDB.objects.all()
     }
-    return render(request,"popular_books.html",books)
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+    return render(request,"popular_books.html",books ,{'cart_count': total_items})
 
 def Contact_Us(request):
     category = {'categories': CategoryDB.objects.all()}
-    return render(request,"contact.html",category)
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+    return render(request,"contact.html",category,{'cart_count': total_items})
 
 def save_contact(request):
     if request.method=="POST":
@@ -37,6 +62,7 @@ def save_contact(request):
         msg = request.POST.get('message')
         obj = ContactDB(name=name,mail=mail,subject=sub,message=msg)
         obj.save()
+        messages.success(request,"Saved successfully")
         return redirect(Contact_Us)
 
 def filtered_page(request,book_category):
@@ -44,14 +70,24 @@ def filtered_page(request,book_category):
                 'books':BookDB.objects.filter(category=book_category),
                 'filter':book_category
                 }
-    return render(request,"filtered_book.html",category)
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+    return render(request,"filtered_book.html",category,{'cart_count': total_items})
 
 def single_book(request,book_id):
     category = {
         'categories': CategoryDB.objects.all(),
         'single':BookDB.objects.get(id=book_id)
                 }
-    return render(request,"book_details.html",category)
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+    return render(request,"book_details.html",category,{'cart_count': total_items})
 
 
 # ---------------------------------------------------------------------
@@ -73,22 +109,19 @@ def save_signup(request):
         if password != cnf_password:
             messages.error(request, 'Passwords do not match. Please try again.')
             return redirect(signup_page)
-        
         # Check for duplicate username
         if RegistrationDB.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists. Please choose a different username.')
             return redirect(signup_page)
-        
         # Check for duplicate email
         if RegistrationDB.objects.filter(mail=mail).exists():
             messages.error(request, 'Email already registered. Please use a different email.')
             return redirect(signup_page)
-        
         # Check for duplicate name
         if RegistrationDB.objects.filter(name=name).exists():
             messages.error(request, 'This name is already registered.')
             return redirect(signup_page)
-        
+
         # Create new user
         obj = RegistrationDB(
             username=username,name=name,
@@ -126,4 +159,72 @@ def sign_out(request):
 #-----------------------------------------------
 
 def cart_page(request):
-    return render(request,"cart.html")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        book_name = request.POST.get('title')
+        quantity = int(request.POST.get('quantity'))
+        price = int(request.POST.get('price'))
+        total_price = int(request.POST.get('total'))
+
+        book = BookDB.objects.filter(title=book_name).first()
+        image = book.cover_image if book else None
+
+        obj=CartDB(
+            username=username,
+            title=book_name,
+            quantity=quantity,
+            price=price,
+            total_price=total_price,
+            book_img=image
+        )
+        obj.save()
+        return redirect('cart_page')
+
+    context = CartDB.objects.filter(username=request.session.get('username'))
+
+    uname = request.session.get('username')
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+
+    sub_total=0
+    delivery_charge=0
+    total_amount=0
+    for i in context:
+        sub_total += i.total_price
+        if sub_total > 500:
+            delivery_charge=50
+        else :
+            delivery_charge=100
+        total_amount= sub_total+delivery_charge
+
+    return render(request, "cart.html", {'data':context , 'sub_total':sub_total ,
+                                         'delivery_charge':delivery_charge,
+                                         'total_amount':total_amount,
+                                         'cart_count': total_items,
+                                         })
+
+def remove_cart(request, item_id):
+    CartDB.objects.filter(id=item_id).delete()
+    return redirect('cart_page')
+
+def checkout_page(request):
+    uname = request.session.get('username')
+    data = CartDB.objects.filter(username=uname)
+
+    sub_total = sum(i.total_price for i in data)
+    delivery_charge = 50 if sub_total > 500 else 100
+    total_amount = sub_total + delivery_charge
+    total_items = 0  # always define first
+
+    if uname:
+        total_items = CartDB.objects.filter(username=uname).count()
+
+    return render(request, "checkout.html", {
+        'data': data,
+        'sub_total': sub_total,
+        'delivery_charge': delivery_charge,
+        'total_amount': total_amount,
+        'cart_count': total_items,
+    })

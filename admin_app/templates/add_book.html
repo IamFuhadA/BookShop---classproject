@@ -65,53 +65,83 @@
     </form>
   </div>
 
-  <script>
-    function validateForm() {
-      let title = document.addBookForm.title.value;
-      let author = document.addBookForm.author.value;
-      let category = document.addBookForm.category.value;
-      let price = document.addBookForm.price.value;
-      let publisher = document.addBookForm.publisher.value;
-      let description = document.addBookForm.description.value;
-      let img = document.addBookForm.img.value;
+<!--  <script>-->
+<!--    function validateForm() {-->
+<!--      let title = document.addBookForm.title.value;-->
+<!--      let author = document.addBookForm.author.value;-->
+<!--      let category = document.addBookForm.category.value;-->
+<!--      let price = document.addBookForm.price.value;-->
+<!--      let publisher = document.addBookForm.publisher.value;-->
+<!--      let description = document.addBookForm.description.value;-->
+<!--      let img = document.addBookForm.img.value;-->
 
-      if (title == "" || title == null) {
-        alert("Title must be filled out");
-        return false;
-      }
-      else if (author == "" || author == null) {
-        alert("Author must be filled out");
-        return false;
-      }
-      else if (category == "" || category == null) {
-        alert("Category must be selected");
-        return false;
-      }
-      else if (price == "" || price == null) {
-        alert("Price must be filled out");
-        return false;
-      }
-      else if (isNaN(price) || price <= 0) {
-        alert("Please enter a valid price");
-        return false;
-      }
-      else if (publisher == "" || publisher == null) {
-        alert("Publisher must be filled out");
-        return false;
-      }
-      else if (description == "" || description == null) {
-        alert("Description must be filled out");
-        return false;
-      }
-      else if (img == "" || img == null) {
-        alert("Cover image must be uploaded");
-        return false;
-      }
+<!--      if (title == "" || title == null) {-->
+<!--        alert("Title must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (author == "" || author == null) {-->
+<!--        alert("Author must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (category == "" || category == null) {-->
+<!--        alert("Category must be selected");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (price == "" || price == null) {-->
+<!--        alert("Price must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (isNaN(price) || price <= 0) {-->
+<!--        alert("Please enter a valid price");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (publisher == "" || publisher == null) {-->
+<!--        alert("Publisher must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (description == "" || description == null) {-->
+<!--        alert("Description must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (img == "" || img == null) {-->
+<!--        alert("Cover image must be uploaded");-->
+<!--        return false;-->
+<!--      }-->
 
-      alert("Book added successfully!");
-      return true;
-    }
-  </script>
+<!--      alert("Book added successfully!");-->
+<!--      return true;-->
+<!--    }-->
+<!--  </script>-->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  {% if messages %}
+      {% for i in messages %}
+          {% if i.tags == 'success' %}
+            <script>
+              swal(
+              '{{i}}','','success'
+              )
+            </script>
+          {% elif i.tags == 'warning' %}
+            <script>
+              swal(
+              '{{i}}','','warning'
+              )
+            </script>
+          {% elif i.tags == 'info' %}
+            <script>
+              swal(
+              '{{i}}','','info'
+              )
+            </script>
+          {% else %}
+            <script>
+              swal(
+              '{{i}}','','error'
+              )
+            </script>
+          {% endif %}
+      {% endfor %}
+  {% endif %}
 </body>
 
 </html>

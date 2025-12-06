@@ -58,9 +58,10 @@
 							<a href="{% url 'signup' %}" class="user-account for-buy"><i
 									class="icon icon-user"></i><span>SignUp/SignIn</span></a>
 							{%endif%}
+							{% if request.session.username %}
 							<a href="{% url 'cart' %}" class="cart for-buy"><i
-									class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
-
+									class="icon icon-clipboard"></i><span>Cart:({{cart_count}})</span></a>
+							{% endif %}
 							<div class="action-menu">
 								<div class="search-bar">
 									<a href="#" class="search-button search-toggle" data-selector="#header-wrap">

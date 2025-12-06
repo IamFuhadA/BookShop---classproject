@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from pyexpat.errors import messages
 from .models import CategoryDB,BookDB
 from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
@@ -6,6 +7,9 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login
 from web_app.models import ContactDB
+from django.contrib import messages
+
+
 # Create your views here.
 def index(request):
     date = datetime.now().strftime("%b %d, %Y")
@@ -16,25 +20,36 @@ def index(request):
 def login_page(request):
     return render(request,"login.html")
 
+
 def admin_login(request):
     if request.method == "POST":
         name = request.POST.get('username')
         pasd = request.POST.get('password')
-        if User.objects.filter(username__contains=name).exists():
-            data = authenticate(username=name,password=pasd)
+
+        # Check if user exists
+        if User.objects.filter(username=name).exists():
+            data = authenticate(username=name, password=pasd)
+
             if data is not None:
-                login(request,data)
-                request.session["username"]=name
-                request.session["password"]=pasd
-                return redirect(index)
+                login(request, data)
+                request.session["username"] = name
+                messages.success(request, "Signed in Successfully")
+                return redirect('index')  # use url name
             else:
+                messages.error(request, "Invalid Password")
                 return redirect(login_page)
-    else:
-        return redirect(login_page)
+
+        else:
+            messages.error(request, "User does not exist")
+            return redirect(login_page)
+
+
+
 
 def logout_page(request):
     del request.session['username']
     del request.session['password']
+    messages.success(request,"Logged out successfully")
     return redirect(login_page)
 
 
@@ -55,6 +70,7 @@ def save_category(request):
             cover_image =img ,
         )
         obj.save()
+        messages.success(request,"saved successfully...!")
         return redirect(add_category)
 
 def display_category(request):
@@ -85,6 +101,7 @@ def update_category(request,u_id):
 def delete_category(request,d_id):
     cate = CategoryDB.objects.get(id=d_id)
     cate.delete()
+    messages.error(request, "Deleted successfully...!")
     return redirect(display_category)
 
 #------------------------------------------------------

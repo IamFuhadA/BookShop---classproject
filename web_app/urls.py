@@ -18,5 +18,10 @@ urlpatterns=[
     path('signin/', views.signin_page, name='signin'),
     path('signin_in/', views.signin, name='signin_in'),
     path('signin_out/', views.sign_out, name='signin_out'),
+    path('cart_page/', views.cart_page, name='cart_page'),
+    path('remove_cart/<int:item_id>/', views.remove_cart, name='remove_cart'),
+    path('checkout/', views.checkout_page, name='checkout'),
+
+
 
 ]

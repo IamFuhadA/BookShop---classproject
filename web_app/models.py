@@ -23,3 +23,4 @@ class CartDB(models.Model):
     price=models.IntegerField(null=True,blank=True)
     total_price=models.IntegerField(null=True,blank=True)
     book_img=models.ImageField(upload_to="Cart Image",null=True,blank=True)
+

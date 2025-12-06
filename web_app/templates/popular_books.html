@@ -65,8 +65,10 @@
 							<a href="{% url 'signup' %}" class="user-account for-buy"><i
 									class="icon icon-user"></i><span>SignUp/SignIn</span></a>
 							{%endif%}
+							{% if request.session.username %}
 							<a href="{% url 'cart' %}" class="cart for-buy"><i
-									class="icon icon-clipboard"></i><span>Cart:(0 $)</span></a>
+									class="icon icon-clipboard"></i><span>Cart:({{cart_count}})</span></a>
+							{% endif %}
 
 							<div class="action-menu">
 
@@ -183,7 +185,7 @@
 											<a href="{% url 'details' i.id %}">
 												<button type="button" class="add-to-cart"
 													data-product-tile="add-to-cart">
-													Add to Cart</button></a>
+													Shop Now</button></a>
 										</figure>
 										<figcaption>
 											<h3>{{i.title}}</h3>

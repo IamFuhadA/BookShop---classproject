@@ -34,24 +34,56 @@
     </form>
   </div>
 
-  <script>
-    function validateForm() {
-      let name = document.addCategoryForm.name.value;
-      let dcpn = document.addCategoryForm.dcpn.value;
+<!--  <script>-->
+<!--    function validateForm() {-->
+<!--      let name = document.addCategoryForm.name.value;-->
+<!--      let dcpn = document.addCategoryForm.dcpn.value;-->
 
-      if (name == "" || name == null) {
-        alert("Category name must be filled out");
-        return false;
-      }
-      else if (dcpn == "" || dcpn == null) {
-        alert("Description must be filled out");
-        return false;
-      }
+<!--      if (name == "" || name == null) {-->
+<!--        alert("Category name must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      else if (dcpn == "" || dcpn == null) {-->
+<!--        alert("Description must be filled out");-->
+<!--        return false;-->
+<!--      }-->
+<!--      alert("Category added successfully!");-->
+<!--      return true;-->
+<!--    }-->
+<!--  </script>-->
 
-      alert("Category added successfully!");
-      return true;
-    }
-  </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  {% if messages %}
+      {% for i in messages %}
+          {% if i.tags == 'success' %}
+            <script>
+              swal(
+              '{{i}}','','success'
+              )
+            </script>
+          {% elif i.tags == 'warning' %}
+            <script>
+              swal(
+              '{{i}}','','warning'
+              )
+            </script>
+          {% elif i.tags == 'info' %}
+            <script>
+              swal(
+              '{{i}}','','info'
+              )
+            </script>
+          {% else %}
+            <script>
+              swal(
+              '{{i}}','','error'
+              )
+            </script>
+          {% endif %}
+      {% endfor %}
+  {% endif %}
+
+
 </body>
 
 </html>
