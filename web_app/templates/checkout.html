@@ -3,21 +3,21 @@
 <html lang="en">
 
 <head>
-    <title>Checkout - BookShop</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Checkout - BookShop</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="{% static 'web/css/normalize.css' %}">
-    <link rel="stylesheet" href="{% static 'web/icomoon/icomoon.css' %}">
-    <link rel="stylesheet" href="{% static 'web/css/vendor.css' %}">
-    <link rel="stylesheet" href="{% static 'web/style.css' %}?v=1.1">
+	<link rel="stylesheet" href="{% static 'web/css/normalize.css' %}">
+	<link rel="stylesheet" href="{% static 'web/icomoon/icomoon.css' %}">
+	<link rel="stylesheet" href="{% static 'web/css/vendor.css' %}">
+	<link rel="stylesheet" href="{% static 'web/style.css' %}?v=1.1">
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
-    <!-- ============ HEADER ============ -->
+	<!-- ============ HEADER ============ -->
 
 	<div id="header-wrap">
 		<div class="top-content">
@@ -131,280 +131,309 @@
 		</header>
 	</div><!--header-wrap-->
 
-    <!-- ============ CHECKOUT SECTION ============ -->
-    <div class="container py-5 px-4">
+	<!-- ============ CHECKOUT SECTION ============ -->
+	<div class="container py-5 px-4">
 
-        <h2 class="fw-bold mb-4">Checkout</h2>
+		<h2 class="fw-bold mb-4">Checkout</h2>
 
-        <div class="row g-4">
+		<div class="row g-4">
 
-            <!-- ========== Billing Details ========== -->
-            <div class="col-md-7">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
+			<!-- ========== Billing Details ========== -->
+			<div class="col-md-7">
+				<div class="card border-0 shadow-sm">
+					<div class="card-body">
 
-                        <h5 class="fw-bold mb-3">Billing Details</h5>
+						<h5 class="fw-bold mb-3">Billing Details</h5>
 
-                        <form action="#" method="POST">
-                            {% csrf_token %}
+						<form action="{% url 'checkout' %}" method="POST">
+							{% csrf_token %}
 
-                            <div class="mb-3">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" name="fullname" class="form-control" value="{{ request.session.username }}" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Phone</label>
-                                <input type="text" name="phone" class="form-control" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control" name="address" rows="3" required></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Payment Method</label>
-                                <select class="form-select" name="payment_type">
-                                    <option value="COD">Cash on Delivery</option>
-                                    <option value="UPI">UPI</option>
-                                    <option value="Card">Debit/Credit Card</option>
-                                </select>
-                            </div>
-
-                            <!-- Hidden totals -->
-                            <input type="hidden" name="sub_total" value="{{ sub_total }}">
-                            <input type="hidden" name="delivery" value="{{ delivery_charge }}">
-                            <input type="hidden" name="total_amount" value="{{ total_amount }}">
-
-                            <button type="submit" class="btn btn-dark w-100 py-2 mt-3">
-                                Place Order →
-                            </button>
-
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- ========== Order Summary ========== -->
-            <div class="col-md-5">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body">
-
-                        <h5 class="fw-bold mb-3">Order Summary</h5>
-
-                        <ul class="list-group mb-3">
-
-                            {% for item in data %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ item.title }}</strong><br>
-                                    <small class="text-muted">Qty: {{ item.quantity }}</small>
-                                </div>
-                                <span>₹{{ item.total_price }}</span>
-                            </li>
-                            {% endfor %}
-
-                        </ul>
-
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Subtotal</span>
-                            <span class="fw-semibold">₹{{ sub_total }}</span>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Delivery Charge</span>
-                            <span class="fw-semibold">₹{{ delivery_charge }}</span>
-                        </div>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold fs-5">Total</span>
-                            <span class="fw-bold fs-5 text-success">₹{{ total_amount }}</span>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ============ FOOTER ============ -->
-		<footer id="footer">
-			<div class="container">
-				<div class="row">
-
-					<div class="col-md-4">
-
-						<div class="footer-item">
-							<div class="company-brand">
-								<h3
-									style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;">
-									<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
-								</h3>
-								<p>At BookShop, we believe that every book tells a story worth sharing. From timeless
-									classics to modern favorites, we curate collections that spark imagination and
-									inspire a lifelong love for reading. Join our community and discover the joy of
-									books—one page at a time.</p>
-
+							<div class="mb-3">
+								<label class="form-label">Full Name</label>
+								<input type="text" name="fullname" class="form-control"
+									value="{{ request.session.username }}" required>
 							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Email</label>
+								<input type="email" name="email" class="form-control" placeholder="you@example.com"
+									required>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Phone</label>
+								<input type="text" name="phone" class="form-control" required>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Address</label>
+								<textarea class="form-control" name="address" rows="3" required></textarea>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Payment Method</label>
+								<select class="form-select" name="payment_type">
+									<option value="COD">Cash on Delivery</option>
+									<option value="UPI">UPI</option>
+									<option value="Card">Debit/Credit Card</option>
+								</select>
+							</div>
+
+							<!-- Hidden totals -->
+							<input type="hidden" name="sub_total" value="{{ sub_total }}">
+							<input type="hidden" name="delivery" value="{{ delivery_charge }}">
+							<input type="hidden" name="total_amount" value="{{ total_amount }}">
+
+							<button type="submit" class="btn btn-dark w-100 py-2 mt-3">
+								Place Order →
+							</button>
+
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- ========== Order Summary ========== -->
+			<div class="col-md-5">
+				<div class="card border-0 shadow-sm">
+					<div class="card-body">
+
+						<h5 class="fw-bold mb-3">Order Summary</h5>
+
+						<ul class="list-group mb-3">
+
+							{% for item in data %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<div>
+									<strong>{{ item.title }}</strong><br>
+									<small class="text-muted">Qty: {{ item.quantity }}</small>
+								</div>
+								<span>₹{{ item.total_price }}</span>
+							</li>
+							{% endfor %}
+
+						</ul>
+
+						<div class="d-flex justify-content-between mb-2">
+							<span class="text-muted">Subtotal</span>
+							<span class="fw-semibold">₹{{ sub_total }}</span>
+						</div>
+
+						<div class="d-flex justify-content-between mb-2">
+							<span class="text-muted">Delivery Charge</span>
+							<span class="fw-semibold">₹{{ delivery_charge }}</span>
+						</div>
+
+						<hr>
+
+						<div class="d-flex justify-content-between">
+							<span class="fw-bold fs-5">Total</span>
+							<span class="fw-bold fs-5 text-success">₹{{ total_amount }}</span>
 						</div>
 
 					</div>
+				</div>
+			</div>
 
-					<div class="col-md-2">
+		</div>
+	</div>
 
-						<div class="footer-menu">
-							<h5>About Us</h5>
-							<ul class="menu-list">
-								<li class="menu-item">
-									<a href="#">vision</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">articles </a>
-								</li>
-								<li class="menu-item">
-									<a href="#">careers</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">service terms</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">donate</a>
-								</li>
-							</ul>
+	<!-- ============ FOOTER ============ -->
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-4">
+
+					<div class="footer-item">
+						<div class="company-brand">
+							<h3
+								style="color: #1e1e1e; font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.5px;">
+								<span style="color: #d4a373;">Book</span><span style="color: #1e1e1e;">Shop</span>
+							</h3>
+							<p>At BookShop, we believe that every book tells a story worth sharing. From timeless
+								classics to modern favorites, we curate collections that spark imagination and
+								inspire a lifelong love for reading. Join our community and discover the joy of
+								books—one page at a time.</p>
+
 						</div>
-
-					</div>
-					<div class="col-md-2">
-
-						<div class="footer-menu">
-							<h5>Discover</h5>
-							<ul class="menu-list">
-								<li class="menu-item">
-									<a href="#">Home</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Books</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Authors</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Subjects</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Advanced Search</a>
-								</li>
-							</ul>
-						</div>
-
-					</div>
-					<div class="col-md-2">
-
-						<div class="footer-menu">
-							<h5>My account</h5>
-							<ul class="menu-list">
-								<li class="menu-item">
-									<a href="#">Sign In</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">View Cart</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">My Wishtlist</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Track My Order</a>
-								</li>
-							</ul>
-						</div>
-
-					</div>
-					<div class="col-md-2">
-
-						<div class="footer-menu">
-							<h5>Help</h5>
-							<ul class="menu-list">
-								<li class="menu-item">
-									<a href="#">Help center</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Report a problem</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Suggesting edits</a>
-								</li>
-								<li class="menu-item">
-									<a href="#">Contact us</a>
-								</li>
-							</ul>
-						</div>
-
 					</div>
 
 				</div>
-				<!-- / row -->
+
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>About Us</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">vision</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">articles </a>
+							</li>
+							<li class="menu-item">
+								<a href="#">careers</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">service terms</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">donate</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Discover</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Home</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Books</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Authors</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Subjects</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Advanced Search</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>My account</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Sign In</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">View Cart</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">My Wishtlist</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Track My Order</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Help</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Help center</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Report a problem</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Suggesting edits</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Contact us</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
 
 			</div>
-		</footer>
+			<!-- / row -->
 
-		<div id="footer-bottom">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
+		</div>
+	</footer>
 
-						<div class="copyright">
-							<div class="row">
+	<div id="footer-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
 
-								<div class="col-md-6">
-									<p>© 2022 All rights reserved. Free HTML Template by <a
-											href="https://www.templatesjungle.com/" target="_blank">TemplatesJungle</a>
-									</p>
-								</div>
+					<div class="copyright">
+						<div class="row">
 
-								<div class="col-md-6">
-									<div class="social-links align-right">
-										<ul>
-											<li>
-												<a href="#"><i class="icon icon-facebook"></i></a>
-											</li>
-											<li>
-												<a href="#"><i class="icon icon-twitter"></i></a>
-											</li>
-											<li>
-												<a href="#"><i class="icon icon-youtube-play"></i></a>
-											</li>
-											<li>
-												<a href="#"><i class="icon icon-behance-square"></i></a>
-											</li>
-										</ul>
-									</div>
-								</div>
-
+							<div class="col-md-6">
+								<p>© 2022 All rights reserved. Free HTML Template by <a
+										href="https://www.templatesjungle.com/" target="_blank">TemplatesJungle</a>
+								</p>
 							</div>
-						</div><!--grid-->
 
-					</div><!--footer-bottom-content-->
-				</div>
+							<div class="col-md-6">
+								<div class="social-links align-right">
+									<ul>
+										<li>
+											<a href="#"><i class="icon icon-facebook"></i></a>
+										</li>
+										<li>
+											<a href="#"><i class="icon icon-twitter"></i></a>
+										</li>
+										<li>
+											<a href="#"><i class="icon icon-youtube-play"></i></a>
+										</li>
+										<li>
+											<a href="#"><i class="icon icon-behance-square"></i></a>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+						</div>
+					</div><!--grid-->
+
+				</div><!--footer-bottom-content-->
 			</div>
 		</div>
+	</div>
 
-		<script src="{% static 'web/js/jquery-1.11.0.min.js' %}"></script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-			integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-			crossorigin="anonymous"></script>
-		<script src="{% static 'web/js/plugins.js' %}"></script>
-		<script src="{% static 'web/js/script.js' %}"></script>
-        <script src="{% static 'web/js/jquery-1.11.0.min.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="{% static 'web/js/jquery-1.11.0.min.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="{% static 'web/js/plugins.js' %}"></script>
+	<script src="{% static 'web/js/script.js' %}"></script>
+	<script src="{% static 'web/js/jquery-1.11.0.min.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+	<!-- SweetAlert Library -->
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+	<!-- Django Messages Display -->
+	{% if messages %}
+	{% for i in messages %}
+	{% if i.tags == 'success' %}
+	<script>
+		swal('{{i}}', '', 'success')
+	</script>
+	{% elif i.tags == 'warning' %}
+	<script>
+		swal('{{i}}', '', 'warning')
+	</script>
+	{% elif i.tags == 'info' %}
+	<script>
+		swal('{{i}}', '', 'info')
+	</script>
+	{% else %}
+	<script>
+		swal('{{i}}', '', 'error')
+	</script>
+	{% endif %}
+	{% endfor %}
+	{% endif %}
 </body>
+
 </html>

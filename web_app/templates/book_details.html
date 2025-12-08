@@ -431,7 +431,7 @@
 			$("#quantity").on("input", function () {
 
 				let x = document.getElementById("price").value;      // base price
-				let y = document.getElementById("quantity").value; // quantity
+				let y = document.getElementById("#quantity").value; // quantity
 				let total = x * y;
 
 				document.getElementById("total").value = total;                     // hidden total
@@ -441,6 +441,31 @@
 		});
 	</script>
 
+	<!-- SweetAlert Library -->
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+	<!-- Django Messages Display -->
+	{% if messages %}
+	{% for i in messages %}
+	{% if i.tags == 'success' %}
+	<script>
+		swal('{{i}}', '', 'success')
+	</script>
+	{% elif i.tags == 'warning' %}
+	<script>
+		swal('{{i}}', '', 'warning')
+	</script>
+	{% elif i.tags == 'info' %}
+	<script>
+		swal('{{i}}', '', 'info')
+	</script>
+	{% else %}
+	<script>
+		swal('{{i}}', '', 'error')
+	</script>
+	{% endif %}
+	{% endfor %}
+	{% endif %}
 
 </body>
 

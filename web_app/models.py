@@ -24,3 +24,12 @@ class CartDB(models.Model):
     total_price=models.IntegerField(null=True,blank=True)
     book_img=models.ImageField(upload_to="Cart Image",null=True,blank=True)
 
+class CheckoutDB(models.Model):
+    username = models.CharField(max_length=100,null=True,blank=True)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20,null=True,blank=True)
+    address = models.TextField()
+    sub_total = models.IntegerField()
+    delivery_charge = models.IntegerField()
+    total_amount = models.IntegerField()
+    payment_type = models.CharField(max_length=50,null=True,blank=True)

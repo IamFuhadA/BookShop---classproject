@@ -96,6 +96,7 @@ def update_category(request,u_id):
             Description = dcpn,
             cover_image =filename ,
         )
+        messages.success(request, 'Category updated successfully!')
         return redirect(display_category)
 
 def delete_category(request,d_id):
@@ -130,6 +131,7 @@ def save_book(request):
             cover_image=img
         )
         obj.save()
+        messages.success(request, 'Book added successfully!')
         return redirect(add_book)
 
 def display_book(request):
@@ -168,11 +170,13 @@ def update_book(request, b_id):
             cover_image=filename
         )
 
+        messages.success(request, 'Book updated successfully!')
         return redirect('display_book')
 
 
 def delete_book(request, b_id):
     BookDB.objects.filter(id=b_id).delete()
+    messages.warning(request, 'Book deleted successfully!')
     return redirect('display_book')
 
 #-----------------------------------------------------
@@ -184,4 +188,5 @@ def message(request):
 
 def delete_message(request, m_id):
     ContactDB.objects.filter(id=m_id).delete()
+    messages.success(request, 'Message deleted successfully!')
     return redirect('message')
