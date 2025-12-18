@@ -6,7 +6,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login
-from web_app.models import ContactDB
+from web_app.models import ContactDB, CheckoutDB
 from django.contrib import messages
 
 
@@ -15,7 +15,15 @@ def index(request):
     date = datetime.now().strftime("%b %d, %Y")
     book=BookDB.objects.count()
     category=CategoryDB.objects.count()
-    return render(request,"index.html",{'date':date,'book':book,'category':category})
+    message_count = ContactDB.objects.count()
+    purchase_count = CheckoutDB.objects.count()
+    return render(request,"index.html",{
+        'date':date,
+        'book':book,
+        'category':category,
+        'message_count': message_count,
+        'purchase_count': purchase_count
+    })
 
 def login_page(request):
     return render(request,"login.html")
@@ -26,6 +34,15 @@ def admin_login(request):
         name = request.POST.get('username')
         pasd = request.POST.get('password')
 
+        # Backend validation
+        if not name or not name.strip():
+            messages.error(request, "Username is required")
+            return redirect(login_page)
+        
+        if not pasd:
+            messages.error(request, "Password is required")
+            return redirect(login_page)
+
         # Check if user exists
         if User.objects.filter(username=name).exists():
             data = authenticate(username=name, password=pasd)
@@ -34,7 +51,7 @@ def admin_login(request):
                 login(request, data)
                 request.session["username"] = name
                 messages.success(request, "Signed in Successfully")
-                return redirect('index')  # use url name
+                return redirect(index)  # use url name
             else:
                 messages.error(request, "Invalid Password")
                 return redirect(login_page)
@@ -64,13 +81,32 @@ def save_category(request):
         name = request.POST.get('name')
         dcpn = request.POST.get('dcpn')
         img = request.FILES.get('img')
+        
+        # Backend validation
+        if not name or not name.strip():
+            messages.error(request, 'Category name is required')
+            return redirect(add_category)
+        
+        if not dcpn or not dcpn.strip():
+            messages.error(request, 'Description is required')
+            return redirect(add_category)
+        
+        if not img:
+            messages.error(request, 'Cover image is required')
+            return redirect(add_category)
+        
+        # Check for duplicate category
+        if CategoryDB.objects.filter(category_name=name).exists():
+            messages.error(request, 'Category with this name already exists')
+            return redirect(add_category)
+        
         obj = CategoryDB(
             category_name =name,
             Description = dcpn,
             cover_image =img ,
         )
         obj.save()
-        messages.success(request,"saved successfully...!")
+        messages.success(request,"Category saved successfully!")
         return redirect(add_category)
 
 def display_category(request):
@@ -120,6 +156,49 @@ def save_book(request):
         publisher = request.POST.get('publisher')
         description = request.POST.get('description')
         img = request.FILES.get('img')
+        
+        # Backend validation
+        if not title or not title.strip():
+            messages.error(request, 'Title is required')
+            return redirect(add_book)
+        
+        if not author or not author.strip():
+            messages.error(request, 'Author is required')
+            return redirect(add_book)
+        
+        if not category or category.strip() == "":
+            messages.error(request, 'Please select a category')
+            return redirect(add_book)
+        
+        if not price or not price.strip():
+            messages.error(request, 'Price is required')
+            return redirect(add_book)
+        
+        try:
+            price_val = int(price)
+            if price_val <= 0:
+                messages.error(request, 'Price must be greater than zero')
+                return redirect(add_book)
+        except ValueError:
+            messages.error(request, 'Please enter a valid price')
+            return redirect(add_book)
+        
+        if not publisher or not publisher.strip():
+            messages.error(request, 'Publisher is required')
+            return redirect(add_book)
+        
+        if not description or not description.strip():
+            messages.error(request, 'Description is required')
+            return redirect(add_book)
+        
+        if not img:
+            messages.error(request, 'Cover image is required')
+            return redirect(add_book)
+        
+        # Check for duplicate title
+        if BookDB.objects.filter(title=title).exists():
+            messages.error(request, 'A book with this title already exists')
+            return redirect(add_book)
 
         obj = BookDB(
             title=title,
@@ -190,3 +269,11 @@ def delete_message(request, m_id):
     ContactDB.objects.filter(id=m_id).delete()
     messages.success(request, 'Message deleted successfully!')
     return redirect('message')
+
+#-----------------------------------------------------
+def display_purchases(request):
+    """Display all purchases/orders in admin dashboard"""
+    data = {
+        'data': CheckoutDB.objects.all().order_by('-id')
+    }
+    return render(request, "display_purchases.html", data)

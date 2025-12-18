@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from admin_app.models import CategoryDB, BookDB
 from .models import RegistrationDB, ContactDB, CartDB, CheckoutDB
 from django.contrib import messages
+import razorpay
 
 
 # ================= HOME PAGE ====================
@@ -74,6 +75,27 @@ def save_contact(request):
         sub = request.POST.get('subject')
         msg = request.POST.get('message')
 
+        # Backend validation
+        if not name or not name.strip():
+            messages.error(request, 'Name is required')
+            return redirect(Contact_Us)
+        
+        if not mail or not mail.strip():
+            messages.error(request, 'Email is required')
+            return redirect(Contact_Us)
+        
+        if '@' not in mail or '.' not in mail:
+            messages.error(request, 'Please enter a valid email address')
+            return redirect(Contact_Us)
+        
+        if not sub or not sub.strip():
+            messages.error(request, 'Subject is required')
+            return redirect(Contact_Us)
+        
+        if not msg or not msg.strip():
+            messages.error(request, 'Message is required')
+            return redirect(Contact_Us)
+
         ContactDB.objects.create(
             name=name,
             mail=mail,
@@ -81,7 +103,7 @@ def save_contact(request):
             message=msg
         )
 
-        messages.success(request, "Saved successfully")
+        messages.success(request, "Message sent successfully!")
         return redirect(Contact_Us)
 
 
@@ -132,21 +154,53 @@ def save_signup(request):
         password = request.POST.get('password')
         cnf_password = request.POST.get('confirm')
 
-        # your validations unchanged
+        # Backend validation for required fields
+        if not username or not username.strip():
+            messages.error(request, 'Username is required')
+            return redirect(signup_page)
+        
+        if not name or not name.strip():
+            messages.error(request, 'Name is required')
+            return redirect(signup_page)
+        
+        if not mail or not mail.strip():
+            messages.error(request, 'Email is required')
+            return redirect(signup_page)
+        
+        if '@' not in mail or '.' not in mail:
+            messages.error(request, 'Please enter a valid email address')
+            return redirect(signup_page)
+        
+        if not contact or not contact.strip():
+            messages.error(request, 'Mobile number is required')
+            return redirect(signup_page)
+        
+        if not contact.isdigit() or len(contact) != 10:
+            messages.error(request, 'Please enter a valid 10-digit mobile number')
+            return redirect(signup_page)
+        
+        if not password:
+            messages.error(request, 'Password is required')
+            return redirect(signup_page)
+        
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long')
+            return redirect(signup_page)
+        
+        if not cnf_password:
+            messages.error(request, 'Confirm password is required')
+            return redirect(signup_page)
+
         if password != cnf_password:
-            messages.error(request, 'Passwords do not match.')
+            messages.error(request, 'Passwords do not match')
             return redirect(signup_page)
 
         if RegistrationDB.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists.')
+            messages.error(request, 'Username already exists')
             return redirect(signup_page)
 
         if RegistrationDB.objects.filter(mail=mail).exists():
-            messages.error(request, 'Email already registered.')
-            return redirect(signup_page)
-
-        if RegistrationDB.objects.filter(name=name).exists():
-            messages.error(request, 'Name already registered.')
+            messages.error(request, 'Email already registered')
             return redirect(signup_page)
 
         RegistrationDB.objects.create(
@@ -171,13 +225,22 @@ def signin(request):
         name = request.POST.get('username')
         password = request.POST.get('password')
 
+        # Backend validation
+        if not name or not name.strip():
+            messages.error(request, 'Username is required')
+            return redirect(signin_page)
+        
+        if not password:
+            messages.error(request, 'Password is required')
+            return redirect(signin_page)
+
         if RegistrationDB.objects.filter(username=name, password=password).exists():
             request.session["username"] = name
             request.session["password"] = password
             messages.success(request, 'Welcome back!')
             return redirect(home_page)
 
-        messages.error(request, 'Invalid username or password.')
+        messages.error(request, 'Invalid username or password')
         return redirect(signin_page)
 
     return redirect(signin_page)
@@ -249,24 +312,66 @@ def remove_cart(request, item_id):
 # ================= CHECKOUT PAGE ====================
 def checkout_page(request):
     uname = request.session.get('username')
+    
+    # Check if user is logged in
+    if not uname:
+        messages.error(request, 'Please login to checkout')
+        return redirect(signin_page)
+    
     data = CartDB.objects.filter(username=uname)
+    
+    # Check if cart is empty
+    if not data.exists():
+        messages.error(request, 'Your cart is empty')
+        return redirect('cart_page')
 
     sub_total = sum(i.total_price for i in data)
     delivery_charge = 50 if sub_total > 500 else 100
     total_amount = sub_total + delivery_charge
 
-    total_items = CartDB.objects.filter(username=uname).count() if uname else 0
+    total_items = data.count()
 
     if request.method == 'POST':
+        fullname = request.POST.get('fullname')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        payment_type = request.POST.get('payment_type')
+        
+        # Backend validation
+        if not fullname or not fullname.strip():
+            messages.error(request, 'Full name is required')
+            return redirect('checkout')
+        
+        if not email or not email.strip():
+            messages.error(request, 'Email is required')
+            return redirect('checkout')
+        
+        if '@' not in email or '.' not in email:
+            messages.error(request, 'Please enter a valid email address')
+            return redirect('checkout')
+        
+        if not phone or not phone.strip():
+            messages.error(request, 'Phone number is required')
+            return redirect('checkout')
+        
+        if not phone.isdigit() or len(phone) != 10:
+            messages.error(request, 'Please enter a valid 10-digit phone number')
+            return redirect('checkout')
+        
+        if not address or not address.strip():
+            messages.error(request, 'Address is required')
+            return redirect('checkout')
+        
         CheckoutDB.objects.create(
-            username=request.POST.get('fullname'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone'),
-            address=request.POST.get('address'),
-            sub_total=request.POST.get('sub_total'),
-            delivery_charge=request.POST.get('delivery'),
-            total_amount=request.POST.get('total_amount'),
-            payment_type=request.POST.get('payment_type'),
+            username=fullname,
+            email=email,
+            phone=phone,
+            address=address,
+            sub_total=sub_total,
+            delivery_charge=delivery_charge,
+            total_amount=total_amount,
+            payment_type=payment_type,
         )
         messages.success(request, 'Order placed successfully! Proceeding to payment...')
         return redirect('payment')
@@ -283,15 +388,68 @@ def checkout_page(request):
 # ================= PAYMENT PAGE ====================
 def payment_page(request):
     uname = request.session.get('username')
+    
+    # Check if user is logged in
+    if not uname:
+        messages.error(request, 'Please login to proceed with payment')
+        return redirect(signin_page)
+    
     cart_items = CartDB.objects.filter(username=uname)
+    
+    # Check if cart is empty
+    if not cart_items.exists():
+        messages.error(request, 'Your cart is empty')
+        return redirect('cart_page')
 
     sub_total = sum(item.total_price for item in cart_items)
     delivery_charge = 50 if sub_total > 500 else 100
     total_amount = sub_total + delivery_charge
 
+    # Get latest checkout data
+    customer = CheckoutDB.objects.order_by('-id').first()
+    
+    # Validate checkout data exists
+    if not customer:
+        messages.error(request, 'Please complete checkout first')
+        return redirect('checkout')
+    
+    payy = customer.total_amount
+    amount = int(payy*100)
+    payy_str = str(amount)
+
+    if request.method == "POST":
+        order_currency = 'INR'
+        client = razorpay.Client(auth=('rzp_test_0ib0jPwwZ7I1lT', 'VjHNO5zKeKxz8PYe7VnzwxMR'))
+        payment = client.order.create({
+            'amount':amount ,
+            'currency':order_currency,
+        })
+
     return render(request, "payment.html", {
         'cart_items': cart_items,
         'sub_total': sub_total,
         'delivery_charge': delivery_charge,
-        'total_amount': total_amount
+        'total_amount': total_amount,
+        'payy_str':payy_str
     })
+
+
+# ================= PAYMENT SUCCESS ====================
+def payment_success(request):
+    """Handle successful payment - Clear cart items"""
+    uname = request.session.get('username')
+    
+    if uname:
+        # Delete all cart items for this user (SIMPLE approach)
+        CartDB.objects.filter(username=uname).delete()
+        messages.success(request, 'Payment successful! Your order has been placed.')
+    
+    return redirect(home_page)
+
+
+# ================= PAYMENT CANCEL ====================
+def payment_cancel(request):
+    """Handle canceled/failed payment - Keep cart items"""
+    # Cart items are NOT deleted (SIMPLE approach)
+    messages.warning(request, 'Payment was canceled. Your cart items are still saved.')
+    return redirect('cart_page')
