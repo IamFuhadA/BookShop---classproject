@@ -444,7 +444,7 @@ def payment_success(request):
         CartDB.objects.filter(username=uname).delete()
         messages.success(request, 'Payment successful! Your order has been placed.')
     
-    return redirect(home_page)
+    return redirect('cart_page')
 
 
 # ================= PAYMENT CANCEL ====================
