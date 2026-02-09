@@ -18,6 +18,7 @@ A full-stack book management and e-commerce platform consisting of a Django-base
 
 ### Desktop App (`desktop-app`)
 - **Standalone Experience**: A dedicated desktop application built with Electron for easier access to the bookshop.
+- **Note** : need to add node modules which is for to setup how to work the exe (not added here) 
 
 ## 🛠️ Tech Stack
 
